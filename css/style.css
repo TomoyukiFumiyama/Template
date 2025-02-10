@@ -1,0 +1,79 @@
+@charset "UTF-8";
+@font-face {
+  font-family: "NotoSansJP";
+  font-weight: 100 900;
+  src: url("../fonts/SourceHanSansJP-VF.otf.woff2") format("woff2"), url("../fonts/SourceHanSansJP-VF.otf") format("opentype");
+}
+:root {
+  --colorA: #333;
+  --colorB: #ea6060;
+  --colorC: #4dc7e1;
+  --colorD: #77e14d;
+  --colorE: #e1de4d;
+}
+
+/* タブレット以上サイズで電話ボタンリンクを非活性状態にする */
+@media screen and (min-width: 768px) {
+  a[href^="tel:"] {
+    pointer-events: none;
+  }
+}
+
+body {
+  font-family: "NotoSansJP", sans-serif;
+  color: #171717;
+}
+
+.l-wrapper {
+  width: 100%;
+}
+
+.l-mainHeader {
+  width: 100%;
+}
+
+.l-mainFooter {
+  width: 100%;
+}
+
+.l-main {
+  width: 100%;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  margin: auto;
+}
+
+img {
+  max-width: 100%;
+}
+
+@media (hover: hover) {
+  .hover {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    transition: all 0.5s ease;
+  }
+  .hover:hover {
+    box-shadow: 0 10px 20px rgb(0 0 0 / 16%);
+    transform: translateY(-10px);
+  }
+}
+
+.sp {
+  display: none;
+}
+.pc {
+  display: block;
+}
+@media screen and (max-width: 479px) {
+  .sp {
+    display: block;
+  }
+  .pc {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1023px) {
+}
