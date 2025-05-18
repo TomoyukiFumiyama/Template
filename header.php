@@ -14,7 +14,7 @@
 		<header class="global-header-wrapper">
 			<div class="global-header-container">
 				<div class="global-header">
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="header-nav-link"><img src="<?php echo get_template_directory_uri();?>/assets/logo-lthree-w.svg" alt="" class="global-header-image" /></a>
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="header-nav-link"><img src="<?php echo get_template_directory_uri();?>/assets/logo-xxxxxxxxx.svg" alt="" class="global-header-image" /></a>
 				</div>
 				<nav class="header-nav">
 					<ul class="header-nav-list">
