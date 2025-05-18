@@ -2,7 +2,7 @@
     <footer class="footer-wrapper">
       <div class="footer-container">
         <h2 class="footer-logo-wrapper">
-          <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="footer-logo-link"><img src="<?php echo get_template_directory_uri();?>/assets/logo-lthree-w.svg" alt="" class="footer-logo" /></a>
+          <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="footer-logo-link"><img src="<?php echo get_template_directory_uri();?>/assets/logo-xxxxxx.svg" alt="" class="footer-logo" /></a>
         </h2>
         <nav class="footer-nav">
           <ul class="footer-nav-list">
@@ -21,7 +21,7 @@
           </ul>
         </nav>
 
-        <sub class="copy-right">Copyright 2023 L-THREE All Rights Reserved.</sub>
+        <sub class="copy-right">Copyright 2025 xxxxxxxx All Rights Reserved.</sub>
       </div>
     </footer>
 
