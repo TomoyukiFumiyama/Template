@@ -4,6 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function enqueue_custom_scripts() {
 	// キャッシュクリア用
 	$current_time = date('YmdHis');
+	// リセットCSS
+	wp_enqueue_style('style', get_template_directory_uri() . '/css/reset.min.css', array());
 
 	// 共通スタイルの読み込み
 	// SwiperのJSファイルとCSSファイルをCDNで読み込み
