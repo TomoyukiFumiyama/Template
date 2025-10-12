@@ -97,3 +97,6 @@ function mytheme_widgets_init() {
 }
 add_action( 'widgets_init', 'mytheme_widgets_init' );
 
+// Structured data (JSON-LD) output.
+require_once get_template_directory() . '/features/seo/structured-data/init.php';
+
