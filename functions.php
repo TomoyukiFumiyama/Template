@@ -70,12 +70,14 @@ function enqueue_custom_scripts() {
 	} elseif (is_post_type_archive('members')) {
 		wp_enqueue_style('master-css', get_template_directory_uri() . '/assets/css/master.css', array(), $current_time);
 		wp_enqueue_style('archive-members-css', get_template_directory_uri() . '/assets/css/archive-members.css', array(), $current_time);
-	} else if (is_page('company')) {
-		wp_enqueue_style('master-css', get_template_directory_uri() . '/assets/css/master.css', array(), $current_time);
-		wp_enqueue_style('company-css', get_template_directory_uri() . '/assets/css/page-company.css', array(), $current_time);
-	} else if (is_page("thanks")) {
-		wp_enqueue_style('master-css', get_template_directory_uri() . '/assets/css/master.css', array(), $current_time);
-	}
+        } else if (is_page('company')) {
+                wp_enqueue_style('master-css', get_template_directory_uri() . '/assets/css/master.css', array(), $current_time);
+                wp_enqueue_style('company-css', get_template_directory_uri() . '/assets/css/page-company.css', array(), $current_time);
+        } else if (is_page_template('job-details.php')) {
+                wp_enqueue_style('job-details-css', get_template_directory_uri() . '/css/job-details.css', array(), $current_time);
+        } else if (is_page("thanks")) {
+                wp_enqueue_style('master-css', get_template_directory_uri() . '/assets/css/master.css', array(), $current_time);
+        }
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
 
