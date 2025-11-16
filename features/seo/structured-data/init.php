@@ -12,11 +12,16 @@ require_once __DIR__ . '/schema-organization.php';
 require_once __DIR__ . '/schema-breadcrumbs.php';
 require_once __DIR__ . '/schema-article.php';
 require_once __DIR__ . '/schema-service.php';
+require_once __DIR__ . '/schema-blog.php';
+require_once __DIR__ . '/schema-author.php';
 
 MyTheme_Structured_Data_Generator::register_schema( 'mytheme_structured_data_schema_website' );
 MyTheme_Structured_Data_Generator::register_schema( 'mytheme_structured_data_schema_organization' );
 MyTheme_Structured_Data_Generator::register_schema( 'mytheme_structured_data_schema_breadcrumbs' );
 MyTheme_Structured_Data_Generator::register_schema( 'mytheme_structured_data_schema_article' );
 MyTheme_Structured_Data_Generator::register_schema( 'mytheme_structured_data_schema_service' );
+MyTheme_Structured_Data_Generator::register_schema( 'mytheme_structured_data_schema_blog' );
+MyTheme_Structured_Data_Generator::register_schema( 'mytheme_structured_data_schema_blog_itemlist' );
+MyTheme_Structured_Data_Generator::register_schema( 'mytheme_structured_data_schema_author_profile' );
 
 MyTheme_Structured_Data_Generator::init();
