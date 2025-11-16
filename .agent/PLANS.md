@@ -35,55 +35,16 @@ AGENTS.md の方針に従い、以下のステップで作業を進めること�
 ### Step 2: JSON-LD を出力する場所の決定
 
 - 共通関数を定義するファイル：
-  - `functions.php` に直接書くか、`inc/jsonld.php` 等の専用ファイルを作成する
+  - `features/seo/structured-data/`内の専用ファイルを利用する
 - 出力のトリガー：
   - `add_action( 'wp_head', 'mytheme_output_jsonld' );` のように `wp_head` へフックする
 
----
-
-## 3. JSON-LD 共通処理の実装
-
-### Step 3: 共通ファイルとエントリ関数
-
-1. `inc/jsonld.php` のようなファイルを作成し、`functions.php` から読み込む：
-
-   ```php
-   // functions.php
-   require_once get_template_directory() . '/inc/jsonld.php';
-````
-
-2. `inc/jsonld.php` に以下のベース関数を定義：
-
-   ```php
-   <?php
-   if ( ! defined( 'ABSPATH' ) ) {
-       exit;
-   }
-
-   function mytheme_output_jsonld() {
-       if ( is_single() && get_post_type() === 'post' ) {
-           mytheme_jsonld_blogposting();
-       } elseif ( is_home() || is_archive() ) {
-           mytheme_jsonld_blog_itemlist();
-       } elseif ( is_author() ) {
-           mytheme_jsonld_author_person();
-       }
-   }
-   add_action( 'wp_head', 'mytheme_output_jsonld' );
-   ```
-
-3. `mytheme_jsonld_blogposting()`, `mytheme_jsonld_blog_itemlist()`,
-   `mytheme_jsonld_author_person()` は後続ステップで実装する。
-
----
 
 ## 4. 単一投稿用 BlogPosting の実装
 
 ### Step 4: BlogPosting 用関数の実装
 
-1. `mytheme_jsonld_blogposting()` を `inc/jsonld.php` に定義する。
-
-2. 現在の投稿情報を取得：
+1. 現在の投稿情報を取得：
 
    * 投稿 ID: `get_the_ID()`
    * タイトル: `get_the_title()`
@@ -122,17 +83,15 @@ AGENTS.md の方針に従い、以下のステップで作業を進めること�
 
 ### Step 5: 一覧ページでの ItemList 実装
 
-1. `mytheme_jsonld_blog_itemlist()` を定義。
+1. 現在のクエリ（`$wp_query`）または `have_posts()` ループを用いて、表示されている投稿リストを取得。
 
-2. 現在のクエリ（`$wp_query`）または `have_posts()` ループを用いて、表示されている投稿リストを取得。
-
-3. 各投稿ごとに以下の情報を取得：
+2. 各投稿ごとに以下の情報を取得：
 
    * タイトル
    * 投稿 URL
    * 一覧内での位置（1 からの連番）
 
-4. `ItemList` の配列を構築：
+3. `ItemList` の配列を構築：
 
    * `@context` = `https://schema.org`
    * `@type` = `ItemList`
@@ -140,14 +99,14 @@ AGENTS.md の方針に従い、以下のステップで作業を進めること�
 
      * 各要素に `@type = ListItem`, `position`, `url`, `name` を持たせる
 
-5. 必要であれば同時に `Blog` オブジェクトも作成：
+4. 必要であれば同時に `Blog` オブジェクトも作成：
 
    * `@type` = `Blog`
    * `name` = ブログ名（`get_bloginfo( 'name' )`）
    * `description` = `get_bloginfo( 'description' )` 等
    * `url` = ブログトップ URL
 
-6. `ItemList` と `Blog` を配列の配列としてまとめ、`json_encode()` して出力する。
+5. `ItemList` と `Blog` を配列の配列としてまとめ、`json_encode()` して出力する。
 
 ---
 
@@ -155,20 +114,18 @@ AGENTS.md の方針に従い、以下のステップで作業を進めること�
 
 ### Step 6: Person JSON-LD の実装
 
-1. `mytheme_jsonld_author_person()` を定義。
-
-2. 現在表示中の著者 ID を取得：
+1. 現在表示中の著者 ID を取得：
 
    * `get_queried_object()` から `ID` を取得するか、`get_the_author_meta()` を利用
 
-3. 著者情報を取得：
+2. 著者情報を取得：
 
    * `display_name`（名前）
    * `user_description`（プロフィール文）
    * `user_url`（個人サイトなど）
    * `get_avatar_url( $author_id )`（プロフィール画像）
 
-4. `Person` 配列を構築：
+3. `Person` 配列を構築：
 
    * `@context` = `https://schema.org`
    * `@type` = `Person`
@@ -178,12 +135,12 @@ AGENTS.md の方針に従い、以下のステップで作業を進めること�
    * `url`
    * `sameAs`（SNS 等がある場合は配列で）
 
-5. 必要に応じて `ProfilePage` も構築：
+4. 必要に応じて `ProfilePage` も構築：
 
    * `@type` = `ProfilePage`
    * `mainEntity` = 上記 `Person` オブジェクト
 
-6. `json_encode()` し、`<script type="application/ld+json">` で出力。
+5. `json_encode()` し、`<script type="application/ld+json">` で出力。
 
 ---
 
@@ -234,8 +191,4 @@ AGENTS.md の方針に従い、以下のステップで作業を進めること�
 * [ ] 不要なページ（固定ページなど）で誤った JSON-LD が出力されていない
 * [ ] コードが専用ファイルまたは関数に集約されており、メンテナンスしやすい
 
-```
-
-
-もっと細かく「具体的な PHP コードまで全部書いた版」が欲しければ、そのまま続きで用意します。
 ```
