@@ -1,40 +1,163 @@
-/* 404ページ用のCSS */
-.error-page {
-  text-align: center;
-  padding: 50px 20px;
+/* 404 Page (scoped) */
+.site-404 {
+  /* タイポの基準（PC/タブレット） */
+  --ratio: 1.25; /* ジャンプ率（読みやすい段階差） */
+  --fs-0: clamp(16px, 1.1vw + 12px, 18px); /* 本文基準 */
+  --fs-1: calc(var(--fs-0) * var(--ratio));
+  --fs-2: calc(var(--fs-1) * var(--ratio));
+  --fs-3: calc(var(--fs-2) * var(--ratio));
+  --fs-4: calc(var(--fs-3) * var(--ratio));
+
+  font-size: var(--fs-0);
+  line-height: 1.8;
+  padding: clamp(2rem, 4vw, 4rem) 1rem;
 }
 
-.error-title {
-  font-size: 2rem;
-  color: #e65512;
+.site-404__inner {
+  max-width: 56rem;
+  margin: 0 auto;
 }
 
-.error-navigation {
-  margin-top: 80px;
+.site-404__header {
+  margin-bottom: 2rem;
 }
 
-.error-description {
-  margin-top: 10px;
-  font-size: 1rem;
-  color: #555;
+.site-404__code {
+  font-size: var(--fs-4);
+  line-height: 1;
+  margin: 0 0 0.5rem;
+  opacity: 0.35;
+  letter-spacing: 0.08em;
 }
 
-.button-wrapper {
-  margin-top: 20px;
+.site-404__title {
+  font-size: var(--fs-3);
+  line-height: 1.35;
+  margin: 0 0 0.75rem;
 }
 
-.back-home-button {
+.site-404__lead {
+  margin: 0;
+  max-width: 46rem;
+  opacity: 0.9;
+}
+
+.site-404__actions {
+  margin: 2rem 0;
+  padding: 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+}
+
+.site-404__label {
   display: inline-block;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  background-color: #e65512;
-  text-decoration: none;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  font-size: 0.95em;
+  margin-bottom: 0.5rem;
 }
 
-.back-home-button:hover {
-  background-color: #d44807;
+.site-404__searchrow {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.site-404__searchinput {
+  flex: 1 1 16rem;
+  min-height: 44px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  font-size: 1em;
+}
+
+.site-404__searchbutton {
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  cursor: pointer;
+  background: transparent;
+  font-size: 1em;
+}
+
+.site-404__buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.site-404__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 1em;
+}
+
+.site-404__button--primary {
+  font-weight: 600;
+}
+
+.site-404__subtitle {
+  font-size: var(--fs-1);
+  line-height: 1.5;
+  margin: 2rem 0 0.75rem;
+}
+
+.site-404__nav {
+  margin: 0;
+}
+
+.site-404__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.site-404__item {
+  margin: 0;
+}
+
+.site-404__link {
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  padding-bottom: 0.05em;
+}
+
+.site-404__text {
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* focus */
+.site-404 a:focus-visible,
+.site-404 button:focus-visible,
+.site-404 input:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* スマホ：本文 3.75vw 基準 + スケールで自然に拡大 */
+@media (max-width: 560px) {
+  .site-404 {
+    /* 3.75vwを基準に、極端に小さく/大きくなりすぎないようにクランプ */
+    --fs-0: clamp(14px, 3.75vw, 16px);
+  }
+
+  .site-404__actions {
+    padding: 1rem;
+  }
+
+  .site-404__list {
+    grid-template-columns: 1fr;
+  }
 }
