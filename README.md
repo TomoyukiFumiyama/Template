@@ -1,115 +1,77 @@
-# YOZURIHA Theme (WordPress)
+# YUZURIHA Theme (WordPress)
 
-WordPress オリジナルテーマのベース実装です。  
-このテーマは「通常の投稿テンプレート + LP テンプレート + セキュリティ + SEO 構造化データ」を一体で管理する構成になっています。
+WordPress 標準 API を尊重した、拡張可能なオリジナルテーマです。
 
-## このテーマの特徴
+## ディレクトリ構成
 
-- 投稿・固定ページ・アーカイブなど WordPress 標準テンプレート階層に対応
-- CSS/JS をテーマ内で管理し、必要ページごとに条件分岐で読み込み
-- SNS URL をカスタマイザー連携で管理（入力済み項目のみ出力）
-- 命名規則は原則として `yzrh-`（ハンドル） / `yzrh_`（PHP関数）プレフィックスで統一
-- `features/security/` でハードニング処理を分離
-- `features/seo/structured-data/` で JSON-LD を機能別に分離
-  - 単一投稿: `BlogPosting`
-  - ブログ一覧: `ItemList` + `Blog`
-  - 筆者ページ: `Person`
+`functions.php` は次の責務別モジュールだけを読み込みます。
 
----
+- `inc/setup.php`: `title-tag`、HTML5、メニュー、ウィジェットなどのテーマ設定
+- `inc/assets.php`: 共通・ページ別 CSS と JavaScript、エディターブロック
+- `inc/security.php`: XML-RPC、pingback、セキュリティヘッダー
+- `inc/performance.php`: パフォーマンス調整用フック
+- `inc/seo.php`: OGP、パンくず、JSON-LD
+- `inc/admin.php`: 管理・メインクエリー調整
+- `inc/images.php`: 画像サイズ
+- `inc/cleanup.php`: 不要な head 出力の整理
+- `inc/helpers.php`: 共通設定・ヘルパー
+- `inc/customizer.php`: SNS カスタマイザー
 
-## ディレクトリ構成と役割
+CSS は `css/header.css`、`css/footer.css`、`css/reset.min.css`、`css/style.css` を共通のまま維持し、ページ固有 CSS を `css/page/`、複数ページで再利用する部品を `css/component/` に配置します。
 
-### ルート直下
+## SEO 基本機能
 
-- `functions.php`  
-  テーマ初期化、アセット読み込み、各 feature の読み込み。
-- `header.php` / `footer.php` / `sidebar.php`  
-  共通レイアウト。
-- `single.php` / `archive.php` / `index.php` / `page.php` / `search.php` / `404.php`  
-  標準テンプレート。
-- `.agents/PLANS.md`  
-  JSON-LD 実装計画と完了条件。
-- `AGENTS.md`  
-  本テーマ作業時の実装方針。
+- `title-tag` は WordPress のテーマサポートを利用します。
+- canonical は WordPress コアの `rel_canonical()` とアーカイブの canonical を尊重し、テーマで重複出力しません。
+- `yzrh_ogp_tags` フィルターで OGP 値を案件ごとに変更できます。
+- `yzrh_breadcrumb()` は固定ページ、投稿、カテゴリ、カスタム投稿、カスタムタクソノミー、検索、404 に対応します。同じ `yzrh_get_breadcrumb_items()` を `BreadcrumbList` も利用するため表示と構造化データが一致します。
+- 各主要テンプレートは一つのページ見出し (`h1`) と、記事・セクション見出し (`h2` 以下) の階層を使用します。
+- 404 テンプレートは 404 ステータスと no-cache ヘッダーを明示します。
+- 一覧、アーカイブ、検索結果には WordPress 標準ページネーションを使用します。
 
-### `features/`
-
-- `features/seo/structured-data/`  
-  JSON-LD 構造化データ生成の中核。
-  - `init.php`: 各スキーマ登録と `wp_head` フック
-  - `class-structured-data-generator.php`: 共通ユーティリティ / 出力エンジン
-  - `schema-article.php`: `BlogPosting`
-  - `schema-blog.php`: `ItemList` / `Blog`
-  - `schema-author.php`: `Person`
-  - `jsonld-functions.php`: 互換用の公開関数 (`yzrh_output_jsonld()` など)
-- `features/core/settings/`  
-  機能共通で使う設定デフォルト値と設定取得ヘルパー。
-- `features/security/`  
-  セキュリティ関連機能の初期化・実装。
-- `features/customizer/`  
-  カスタマイザー（SNS 設定など）。
-
-### `template-parts/`, `templates/`, `lp/`
-
-- `template-parts/`  
-  再利用ブロック（アーカイブ項目など）。
-- `templates/`, `lp/`  
-  固定ページ用テンプレート / LP 用テンプレート。
-
-### `assets/`, `css/`, `js/`, `fonts/`
-
-- `assets/images/` 画像アセット
-- `css/` ページ・部位ごとのスタイル
-- `js/` フロント側スクリプト
-- `fonts/` テーマ同梱フォント
-
----
-
-## JSON-LD の動作仕様（運用メモ）
-
-### 出力トリガー
-
-`functions.php` → `features/seo/structured-data/init.php` を読み込み、  
-`wp_head` で `yzrh_output_jsonld()` が実行されます。
-
-### 出力される主スキーマ
-
-- 単一投稿 (`is_singular('post')`): `BlogPosting`
-- ブログ一覧 (`is_home()`, カテゴリ, タグ, 日付アーカイブ等): `ItemList` + `Blog`
-- 筆者ページ (`is_author()`): `Person`
-
-### 拡張方法
-
-1. `features/seo/structured-data/` に新しい `schema-*.php` を追加
-2. `init.php` で `require_once` と `register_schema()` を追加
-3. 必要なら `class-structured-data-generator.php` に共通処理を追加
-4. 実ページ + リッチリザルトテストで確認
-
----
-
-## 検証手順（最低限）
-
-1. 投稿ページ、一覧ページ、筆者ページの HTML ソースを開く
-2. `<head>` 内に `<script type="application/ld+json">` があるか確認
-3. Google リッチリザルトテストで URL を検証
-4. エラー時は対象 `schema-*.php` の出力条件と値を修正
-
----
-
-## 既存のSNS出力ヘルパー
-
-以下のように呼び出すと、カスタマイザーで URL を設定した SNS のみ出力されます。
+テンプレート内でパンくずを表示する場合:
 
 ```php
-<?php yzrh_output_sns_icons(); ?>
+<?php yzrh_breadcrumb(); ?>
 ```
 
-## 外部ファイル読み込み時のセキュリティ方針
+## JSON-LD と案件別拡張
 
-このテーマでは、Google アナリティクス、Swiper、各種 CDN などを追加するたびに許可ドメインの更新が必要になるため、テーマ側から `Content-Security-Policy` ヘッダーは送信しません。代わりに、外部ファイルを追加する際は次の運用で安全性を確保します。
+標準では `WebSite`、`Organization`、`BreadcrumbList`、`BlogPosting` (`Article` 系)、`Service`、`Blog`、`ItemList`、`Person` を必要なページだけに出力します。値は PHP 配列から `wp_json_encode()` で生成されます。
 
-- 可能な限り、外部ライブラリはテーマ内に同梱して `wp_enqueue_script()` / `wp_enqueue_style()` から読み込みます。
-- CDN を使う場合は、信頼できる公式配布元を選び、可能であれば Subresource Integrity (SRI) の `integrity` 属性と `crossorigin` 属性を付与します。
-- Google アナリティクスやタグマネージャーなどの計測タグは、管理者が把握できる 1 箇所に集約して追加します。
-- 入力値のエスケープ、XML-RPC / pingback 抑止、クリックジャッキング対策、MIME sniffing 抑止、リファラーポリシーなど、CSP 以外の軽量なセキュリティヘッダーは `features/security/` で継続します。
-- より厳密な CSP が必要な環境では、テーマではなくサーバー / CDN / セキュリティプラグイン側で、運用中の外部サービス一覧に合わせて一元管理します。
+`yzrh_jsonld_schema_map` は案件別スキーマ登録用、`yzrh_structured_data_schema_callbacks` は最終的なコールバック調整用です。`LocalBusiness`、`Product`、`FAQPage` などはテーマ本体を変更せず追加できます。
+
+```php
+add_filter( 'yzrh_structured_data_schema_callbacks', function ( $callbacks ) {
+    $callbacks[] = 'project_schema_product';
+    return $callbacks;
+} );
+
+function project_schema_product() {
+    if ( ! is_singular( 'product' ) ) {
+        return null;
+    }
+    return array(
+        '@context' => 'https://schema.org',
+        '@type'    => 'Product',
+        'name'     => wp_strip_all_tags( get_the_title() ),
+        'url'      => get_permalink(),
+    );
+}
+```
+
+`Organization` を `LocalBusiness` に変更する場合は `yzrh_structured_data_organization` フィルターを利用できます。同じ登録方式で `FAQPage` も追加してください。存在しない価格、住所、画像、SNS、FAQ 回答などを推測して出力しないでください。
+
+## 検証
+
+1. 投稿、一覧、筆者、対象の各ページの HTML ソースを確認します。
+2. `<head>` の OGP と `<script type="application/ld+json">` を確認します。
+3. 表示パンくずと `BreadcrumbList.itemListElement` の順序・名称・URLが一致するか確認します。
+4. Google リッチリザルトテストと Schema.org Validator で公開 URL を検証します。
+
+## JavaScript とセキュリティ
+
+- テーマ内 JavaScript は jQuery に依存しないバニラ JavaScriptです。ブロックエディター用コードは WordPress が提供する `window.wp` API のみを利用します。
+- XML-RPC、pingback、WordPress の generator バージョン出力を停止します。
+- コメント受付を閉じ、コメント・トラックバック対応を全投稿タイプから外します。管理メニュー、管理バー、ダッシュボードにもコメント項目を表示しません。
+- `tel:` リンクは CSS とバニラ JavaScriptの両方で制御し、幅767px以下のSP表示でのみ発信動作を許可します。
