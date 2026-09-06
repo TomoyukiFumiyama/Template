@@ -35,7 +35,7 @@ AGENTS.md の方針に従い、以下のステップで作業を進めること�
 ### Step 2: JSON-LD を出力する場所の決定
 
 - 共通関数を定義するファイル：
-  - `features/seo/structured-data/` 内を利用
+  - `inc/seo.php` に集約
 - 出力のトリガー：
   - `add_action( 'wp_head', 'mytheme_output_jsonld', 5 );`
 
@@ -113,3 +113,12 @@ AGENTS.md の方針に従い、以下のステップで作業を進めること�
 - [x] すべての JSON-LD が有効な JSON であり、`wp_json_encode()` で安全に出力される
 - [x] 不要なページ（固定ページなど）で誤った JSON-LD が出力されない
 - [x] コードが専用ファイルまたは関数に集約されており、メンテナンスしやすい
+
+## 10. SEO 基盤とディレクトリ再編 (2026-09-06)
+
+- [x] `features/` を廃止し、責務別の `inc/*.php` に集約
+- [x] ページ固有 CSS を `css/page/` に移動
+- [x] OGP、共通パンくず、BreadcrumbList 連動を実装
+- [x] 固定ページ、投稿、カテゴリ、カスタム投稿、カスタムタクソノミー、検索、404 をパンくず対象化
+- [x] 案件固有の Organization / LocalBusiness / Article / Product / FAQPage 等をフィルター登録可能にする
+- [x] WordPress 標準の title、canonical、404、ページネーションを尊重

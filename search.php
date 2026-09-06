@@ -42,7 +42,14 @@ get_header();
 			<?php endwhile; ?>
 		</div>
 
-		<?php the_posts_navigation(); ?>
+		<?php
+		the_posts_pagination(
+			array(
+				'prev_text' => esc_html__( '前へ', 'yzrh' ),
+				'next_text' => esc_html__( '次へ', 'yzrh' ),
+			)
+		);
+		?>
 	<?php else : ?>
 		<section class="no-results not-found">
 			<header class="page-header">

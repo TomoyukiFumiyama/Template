@@ -16,16 +16,54 @@ class YZRH_Security_Hardening {
 	 * Bootstrap the hardening measures.
 	 */
 	public static function init() {
+		remove_action( 'wp_head', 'wp_generator' );
 		add_filter( 'the_generator', '__return_empty_string' );
 		add_filter( 'style_loader_src', array( __CLASS__, 'remove_asset_version' ), 10, 2 );
 		add_filter( 'script_loader_src', array( __CLASS__, 'remove_asset_version' ), 10, 2 );
 
 		add_filter( 'xmlrpc_enabled', '__return_false' );
-		add_filter( 'xmlrpc_methods', array( __CLASS__, 'disable_pingback_method' ) );
+		add_filter( 'xmlrpc_methods', '__return_empty_array' );
 		add_filter( 'wp_headers', array( __CLASS__, 'remove_x_pingback_header' ) );
 		add_filter( 'pings_open', '__return_false' );
+		add_filter( 'comments_open', '__return_false', 20, 2 );
+		add_filter( 'comments_array', '__return_empty_array', 10, 2 );
 
 		add_action( 'send_headers', array( __CLASS__, 'send_security_headers' ) );
+		add_action( 'init', array( __CLASS__, 'disable_comment_support' ), 100 );
+		add_action( 'admin_init', array( __CLASS__, 'disable_comment_support' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'hide_comment_admin_menu' ), 100 );
+		add_action( 'wp_before_admin_bar_render', array( __CLASS__, 'hide_comment_admin_bar' ) );
+		add_action( 'wp_dashboard_setup', array( __CLASS__, 'hide_comment_dashboard_widget' ) );
+	}
+
+	/** Remove comment support from every registered public content type. */
+	public static function disable_comment_support() {
+		foreach ( get_post_types() as $post_type ) {
+			if ( post_type_supports( $post_type, 'comments' ) ) {
+				remove_post_type_support( $post_type, 'comments' );
+			}
+			if ( post_type_supports( $post_type, 'trackbacks' ) ) {
+				remove_post_type_support( $post_type, 'trackbacks' );
+			}
+		}
+	}
+
+	/** Remove the Comments screen from the administration menu. */
+	public static function hide_comment_admin_menu() {
+		remove_menu_page( 'edit-comments.php' );
+	}
+
+	/** Remove the Comments shortcut from the administration toolbar. */
+	public static function hide_comment_admin_bar() {
+		global $wp_admin_bar;
+		if ( $wp_admin_bar ) {
+			$wp_admin_bar->remove_menu( 'comments' );
+		}
+	}
+
+	/** Remove the recent comments dashboard widget. */
+	public static function hide_comment_dashboard_widget() {
+		remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
 	}
 
 	/**
@@ -56,18 +94,6 @@ class YZRH_Security_Hardening {
 		$query = http_build_query( $params );
 
 		return $query ? $base . '?' . $query : $base;
-	}
-
-	/**
-	 * Remove the pingback method from XML-RPC.
-	 *
-	 * @param array $methods Registered XML-RPC methods.
-	 * @return array
-	 */
-	public static function disable_pingback_method( $methods ) {
-		unset( $methods['pingback.ping'] );
-
-		return $methods;
 	}
 
 	/**
@@ -126,3 +152,5 @@ class YZRH_Security_Hardening {
 		);
 	}
 }
+
+YZRH_Security_Hardening::init();
