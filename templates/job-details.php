@@ -1,6 +1,7 @@
 <?php
 /**
  * Template Name: Job Details
+ * Template Post Type: page
  *
  * @package yzrh
  */

@@ -17,16 +17,18 @@ get_header();
 	<?php if ( have_posts() ) : ?>
 		<div class="archive-post-list">
 			<?php while ( have_posts() ) : the_post(); ?>
-				<article id="post-<?php the_ID(); ?>" <?php post_class( 'archive-post-item' ); ?>>
-					<?php if ( has_post_thumbnail() ) : ?>
-						<a class="archive-post-thumb" href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'medium_large' ); ?></a>
-					<?php endif; ?>
-
-					<h2 class="archive-post-title">
-						<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-					</h2>
-					<div class="archive-post-excerpt"><?php the_excerpt(); ?></div>
-				</article>
+				<?php
+				get_template_part(
+					'template-parts/post-list-item',
+					null,
+					array(
+						'article_class'   => 'archive-post-item',
+						'thumbnail_class' => 'archive-post-thumb',
+						'title_class'     => 'archive-post-title',
+						'excerpt_class'   => 'archive-post-excerpt',
+					)
+				);
+				?>
 			<?php endwhile; ?>
 		</div>
 
